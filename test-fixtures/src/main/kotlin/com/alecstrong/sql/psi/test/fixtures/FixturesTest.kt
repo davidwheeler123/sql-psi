@@ -1,5 +1,6 @@
 package com.alecstrong.sql.psi.test.fixtures
 
+import com.alecstrong.sql.psi.core.PredefinedTable
 import com.alecstrong.sql.psi.core.SqlFileBase
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
@@ -9,7 +10,11 @@ import java.util.Enumeration
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 
-abstract class FixturesTest(val name: String, val fixtureRoot: File) {
+abstract class FixturesTest(
+  val name: String,
+  val fixtureRoot: File,
+  val predefinedTables: List<PredefinedTable> = emptyList(),
+) {
   protected open val replaceRules: Array<Pair<String, String>> = emptyArray()
 
   abstract fun setupDialect()
@@ -28,14 +33,22 @@ abstract class FixturesTest(val name: String, val fixtureRoot: File) {
 
     val environment = parser.build(
       root = newRoot.path,
-    ) { element, s ->
-      val documentManager = PsiDocumentManager.getInstance(element.project)
-      val name = element.containingFile.name
-      val document = documentManager.getDocument(element.containingFile)!!
-      val lineNum = document.getLineNumber(element.textOffset)
-      val offsetInLine = element.textOffset - document.getLineStartOffset(lineNum)
-      errors.add("$name line ${lineNum + 1}:$offsetInLine - $s")
-    }
+      annotator = { element, s ->
+        val documentManager = PsiDocumentManager.getInstance(element.project)
+        val name = element.containingFile.name
+        val document = documentManager.getDocument(element.containingFile)!!
+        val lineNum = document.getLineNumber(element.textOffset)
+        val offsetInLine = element.textOffset - document.getLineStartOffset(lineNum)
+        errors.add("$name line ${lineNum + 1}:$offsetInLine - $s")
+      },
+      predefinedTables = (
+        newRoot.listFiles { _, name ->
+          name.endsWith(".predefined")
+        }?.map {
+          PredefinedTable("", it.nameWithoutExtension, it.readText())
+        } ?: emptyList()
+        ) + predefinedTables,
+    )
 
     val sourceFiles = StringBuilder()
     environment.forSourceFiles<SqlFileBase> {

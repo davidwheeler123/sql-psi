@@ -1,6 +1,6 @@
 [versions]
 ideaVersion = "221.6008.13" # Electric Eel (2022.1.1) RC 1 (see https://plugins.jetbrains.com/docs/intellij/android-studio-releases-list.html)
-kotlin = "1.8.10"
+kotlin = "1.8.20"
 
 [libraries]
 intellijCoreImpl = { module = "com.jetbrains.intellij.platform:core-impl", version.ref = "ideaVersion" }
@@ -15,8 +15,8 @@ intelliJ = ["intellijCoreImpl", "intellijProjectModelImpl", "intellijAnalysisImp
 
 [plugins]
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-grammarKitComposer = { id = "com.alecstrong.grammar.kit.composer", version = "0.1.11" }
-spotless = { id = "com.diffplug.spotless", version = "6.15.0" }
-mavenPublish = { id = "com.vanniktech.maven.publish", version = "0.24.0" }
-dokka = { id = "org.jetbrains.dokka", version = "1.7.20" }
-intellij = { id = "org.jetbrains.intellij", version = "1.13.0" }
+grammarKitComposer = { id = "com.alecstrong.grammar.kit.composer", version = "0.1.12" }
+spotless = { id = "com.diffplug.spotless", version = "6.18.0" }
+mavenPublish = { id = "com.vanniktech.maven.publish", version = "0.25.1" }
+dokka = { id = "org.jetbrains.dokka", version = "1.8.10" }
+intellij = { id = "org.jetbrains.intellij", version = "1.13.3" }
